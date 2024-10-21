@@ -114,7 +114,7 @@ class ClosedLoop:
             Kp = 0.15
             #error = 0
             my_controller = controller(Kd, Kp)
-            actions[t], current_error = get_action(my_controller.Kd, my_controller.Kp, t, current_error)
+            actions[t], current_error = get_action(my_controller.Kd, my_controller.Kp, current_error,mission.reference(t), observation_t)
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
