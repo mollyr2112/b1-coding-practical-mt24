@@ -95,7 +95,7 @@ class ClosedLoop:
         self.plant = plant
         self.controller = controller
 
-    def simulate(self,  mission: Mission, disturbances: np.ndarray, my_controller: Controller) -> Trajectory:
+    def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
         T = len(mission.reference)
         if len(disturbances) < T:
@@ -112,11 +112,11 @@ class ClosedLoop:
             # Call your controller here
             
             #my_controller = Controller(Kd, Kp)
-            actions[t], current_error = get_action(my_controller.Kd, my_controller.Kp, current_error, mission.reference[t], observation_t)
+            actions[t], current_error = get_action(self.controller.Kd, self.controller.Kp, current_error, mission.reference[t], observation_t)
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
         
-    def simulate_with_random_disturbances(self, mission: Mission, my_controller: Controller, variance: float = 0.5) -> Trajectory:
+    def simulate_with_random_disturbances(self, mission: Mission, variance: float = 0.5) -> Trajectory:
         disturbances = np.random.normal(0, variance, len(mission.reference))
-        return self.simulate(mission, disturbances, my_controller)
+        return self.simulate(mission, disturbances)
