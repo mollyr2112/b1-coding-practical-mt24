@@ -85,17 +85,17 @@ class Mission:
         return cls(reference, cave_height, cave_depth)
         # pass
 
-class controller:
+class Controller:
      def __init__(self, Kd, Kp):
         self.Kd = Kd
         self.Kp = Kp
 
 class ClosedLoop:
-    def __init__(self, plant: Submarine, controller):
+    def __init__(self, plant: Submarine, controller: Controller):
         self.plant = plant
         self.controller = controller
 
-    def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
+    def simulate(self,  mission: Mission, disturbances: np.ndarray, my_controller: Controller) -> Trajectory:
 
         T = len(mission.reference)
         if len(disturbances) < T:
@@ -110,10 +110,10 @@ class ClosedLoop:
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
             # Call your controller here
-            Kd = 0.6
-            Kp = 0.15
+            #Kd = 0.6
+           # Kp = 0.15
             #error = 0
-            my_controller = controller(Kd, Kp)
+            #my_controller = Controller(Kd, Kp)
             actions[t], current_error = get_action(my_controller.Kd, my_controller.Kp, current_error,mission.reference(t), observation_t)
             self.plant.transition(actions[t], disturbances[t])
 
